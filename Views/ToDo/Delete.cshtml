@@ -1,0 +1,27 @@
+﻿@model ToDo.Models.TodoItem
+
+@{
+    ViewBag.Title = "刪除待辦事項";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="max-w-md mx-auto bg-white shadow rounded p-6">
+
+    <h2 class="text-2xl font-bold mb-4">@ViewBag.Title</h2>
+    <div class="mb-4">
+        <h3 class="text-xl mb-2">確定要刪除下列待辦事項嗎?</h3>
+        <p><strong>標題：</strong> @Model.Title</p>
+        <p><strong>描述：</strong> @Model.Description</p>
+        <p><strong>狀態：</strong> @(Model.IsCompleted ? "已完成" : "未完成")</p>
+    </div>
+
+    @using (Html.BeginForm("Delete", "Todo", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.Id)
+        <div class="flex items-center justify-between">
+            <input type="submit" value="刪除" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded" />
+            <a href='@Url.Action("Index", "ToDo")' class="inline-block align-baseline font-bold text-sm text-gray-500 hover:text-red-800">取消</a>
+        </div>
+    }
+</div>

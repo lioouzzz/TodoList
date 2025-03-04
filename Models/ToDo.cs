@@ -2,7 +2,7 @@
 
 namespace ToDo.Models
 {
-    public class ToDo
+    public class TodoItem
     {
         public int Id { get; set; }
 

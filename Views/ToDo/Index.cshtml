@@ -1,0 +1,67 @@
+﻿@model IEnumerable<ToDo.Models.TodoItem>
+
+@{
+    ViewBag.Title = "待辦事項清單";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mx-auto px-4">
+    <!-- 新增待辦事項按鈕 -->
+    <div class="mt-4 text-center">
+        <a href='@Url.Action("Create", "ToDo")' class="inline-block bg-amber-400 text-white font-bold py-2 px-4 rounded hover:bg-white hover:text-orange-500" style="clip-path: polygon(65% 3%, 95% 4%, 100% 43%, 100% 81%, 68% 100%, 7% 93%, 3% 70%, 0% 43%, 25% 13%);">
+            新增待辦事項
+        </a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <!-- 有資料時顯示表格 -->
+        <div class="overflow-x-auto mt-4">
+            <table class="min-w-full divide-y divide-gray-200 bg-white shadow-md rounded-lg overflow-hidden">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">編號</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">標題</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">描述</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">狀態</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">建立日期</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">@item.Id</td>
+                            <td class="px-6 py-4 whitespace-normal max-w-xs break-words">@item.Title</td>
+                            <td class="px-6 py-4 whitespace-normal max-w-xs break-words">@item.Description</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @if (item.IsCompleted)
+                                {
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-300 text-white">已完成</span>
+                                }
+                                else
+                                {
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-400 text-white">未完成</span>
+                                }
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">@item.CreatedDate.ToString("yyyy-MM-dd HH:mm")</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex space-x-2">
+                                    @Html.ActionLink("編輯", "Edit", new { id = item.Id }, new { @class = "text-sky-600 hover:text-sky-700" })
+                                    @Html.ActionLink("刪除", "Delete", new { id = item.Id }, new { @class = "text-rose-400 hover:text-rose-500" })
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <!-- 無資料時顯示提示訊息 -->
+        <p class="text-gray-600 text-center mt-4">目前沒有待辦事項。</p>
+    }
+</div>
+

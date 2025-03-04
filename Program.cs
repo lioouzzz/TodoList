@@ -1,4 +1,12 @@
+using Microsoft.EntityFrameworkCore;
+using ToDo.Data;
+
+
 var builder = WebApplication.CreateBuilder(args);
+
+// 從 appsettings.json 中讀取連線字串
+builder.Services.AddDbContext<ToDoContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ToDoDB")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -22,6 +30,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Todo}/{action=Index}/{id?}");
 
 app.Run();

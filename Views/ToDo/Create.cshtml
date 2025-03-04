@@ -1,0 +1,37 @@
+﻿@model ToDo.Models.TodoItem
+
+@{
+    ViewBag.Title = "新增待辦事項";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="max-w-md mx-auto bg-white shadow rounded p-6">
+    <h2 class="text-2xl font-bold mb-4">@ViewBag.Title</h2>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="mb-4">
+            @Html.LabelFor(model => model.Title, "任務標題", new { @class = "block text-gray-700 font-bold mb-2" })
+            @Html.TextBoxFor(model => model.Title, new { @class = "w-full max-w-xs border rounded px-3 py-2 focus:outline-none focus:ring focus:border-orange-300 focus:ring-orange-200", placeholder = "請輸入標題" })
+            @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-red-500 text-xs mt-1" })
+        </div>
+
+        <div class="mb-4">
+            @Html.LabelFor(model => model.Description, "任務描述", new { @class = "block text-gray-700 font-bold mb-2" })
+            @Html.TextAreaFor(model => model.Description, new { @class = "w-full max-w-xs border rounded px-3 py-2 focus:outline-none focus:ring focus:border-orange-400 focus:ring-orange-200", rows = "4", placeholder = "請輸入描述" })
+            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-red-500 text-xs mt-1" })
+        </div>
+
+        <div class="mb-4 flex items-center">
+            @Html.LabelFor(model => model.IsCompleted, "任務完成", new { @class = "mr-2 text-gray-700 font-bold" })
+            @Html.CheckBoxFor(model => model.IsCompleted, new { @class = "form-checkbox" })
+            @Html.ValidationMessageFor(model => model.IsCompleted, "", new { @class = "text-red-500 text-xs mt-1" })
+        </div>
+
+        <div class="flex items-center justify-between">
+            <input type="submit" value="儲存" class="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 rounded" />
+            <a href='@Url.Action("Index", "ToDo")' class="inline-block align-baseline font-bold text-sm text-gray-500 hover:text-orange-800">取消</a>
+        </div>
+    }
+</div>
