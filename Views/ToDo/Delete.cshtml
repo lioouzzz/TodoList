@@ -15,7 +15,7 @@
         <p><strong>狀態：</strong> @(Model.IsCompleted ? "已完成" : "未完成")</p>
     </div>
 
-    @using (Html.BeginForm("Delete", "Todo", FormMethod.Post))
+    @using (Html.BeginForm("Delete", "ToDo", FormMethod.Post))
     {
         @Html.AntiForgeryToken()
         @Html.HiddenFor(model => model.Id)
