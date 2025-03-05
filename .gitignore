@@ -6,5 +6,6 @@
 *.nupkg
 packages/
 appsettings.json
+appsettings.*.json
 Thumbs.db
 Desktop.ini
