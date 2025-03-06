@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ToDo.Data;
+using ToDo.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,11 +10,21 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ToDoContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ToDoDB")));
 
+builder.Services.AddDefaultIdentity<ApplicationUser>(options=>
+{ 
+    options.SignIn.RequireConfirmedAccount = true;
+})
+.AddEntityFrameworkStores<ToDoContext>();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+
 
 var app = builder.Build();
 
+app.UseAuthentication();
+app.UseAuthorization();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -31,5 +43,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Todo}/{action=Index}/{id?}");
+
+app.MapRazorPages();
 
 app.Run();
