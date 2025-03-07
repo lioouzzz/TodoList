@@ -8,10 +8,10 @@ namespace ToDo.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -42,15 +42,15 @@ namespace ToDo.Controllers
                 {
                     return Redirect(returnUrl);
                 }
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "/");
             }
             ModelState.AddModelError(string.Empty, "登入失敗，請確認您的帳號或密碼是否正確。");
             return View(model);
         }
         [HttpGet]
-        public IActionResult Register(string reutrnUrl = null)
+        public IActionResult Register(string returnUrl = null)
         {
-            ViewData["ReturnUrl"] = reutrnUrl;
+            ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
 
@@ -61,7 +61,7 @@ namespace ToDo.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -70,7 +70,7 @@ namespace ToDo.Controllers
                     {
                         return Redirect(returnUrl);
                     }
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "/");
                 }
                 foreach (var error in result.Errors)
                 {
@@ -84,7 +84,7 @@ namespace ToDo.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "/");
         }
     }
 }
