@@ -12,7 +12,7 @@ builder.Services.AddDbContext<ToDoContext>(options =>
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options=>
 { 
-    options.SignIn.RequireConfirmedAccount = true;
+    options.SignIn.RequireConfirmedAccount = false;
 })
 .AddEntityFrameworkStores<ToDoContext>();
 
@@ -38,6 +38,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

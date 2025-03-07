@@ -9,9 +9,26 @@
 
 </head>
 <body class="flex flex-col min-h-screen">
+    @using Microsoft.AspNetCore.Identity
+    @inject SignInManager<ToDo.Models.ApplicationUser> SignInManager
+    @inject UserManager<ToDo.Models.ApplicationUser> UserManager
     <header class="bg-orange-400 text-white p-4">
-        <div class="container mx-auto">
+        <div class="container mx-auto flex items-center justify-between">
             <h1 class="text-xl font-bold">TodoList</h1>
+            <div class="flex items-center">
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <span class="mr-4">歡迎，@User.Identity.Name</span>
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="inline">
+                        <button type="submit" class="bg-amber-400 hover:bg-orange-500 text-white px-3 py-1 rounded transition duration-200">登出</button>
+                    </form>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" class="bg-amber-400 hover:bg-orange-500 text-white px-3 py-1 rounded transition duration-200">登入</a>
+                    <a asp-controller="Account" asp-action="Register" class="ml-4 bg-amber-400 hover:bg-orange-500 text-white px-3 py-1 rounded transition duration-200">註冊</a>
+                }
+            </div>
         </div>
     </header>
 
