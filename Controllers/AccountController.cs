@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using ToDo.Models;
 
-
 namespace ToDo.Controllers
 {
     public class AccountController : Controller
@@ -11,7 +10,8 @@ namespace ToDo.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AccountController(UserManager<ApplicationUser> userManager,
+                                 SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -30,23 +30,20 @@ namespace ToDo.Controllers
         {
             ViewData["ReturnUrl"] = returnUrl;
             if (!ModelState.IsValid)
-            {
                 return View(model);
-            }
 
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
-
             if (result.Succeeded)
             {
-                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-                {
+                if (!string.IsNullOrEmpty(returnUrl))
                     return Redirect(returnUrl);
-                }
                 return RedirectToAction("Index", "/");
             }
-            ModelState.AddModelError(string.Empty, "登入失敗，請確認您的帳號或密碼是否正確。");
+
+            ModelState.AddModelError("", "登入失敗，請確認帳號與密碼。");
             return View(model);
         }
+
         [HttpGet]
         public IActionResult Register(string returnUrl = null)
         {
@@ -59,26 +56,23 @@ namespace ToDo.Controllers
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (result.Succeeded)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-                    {
-                        return Redirect(returnUrl);
-                    }
-                    return RedirectToAction("Index", "/");
-                }
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                if (!string.IsNullOrEmpty(returnUrl))
+                    return Redirect(returnUrl);
+                return RedirectToAction("Index", "/");
             }
+            foreach (var error in result.Errors)
+                ModelState.AddModelError("", error.Description);
             return View(model);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
@@ -88,3 +82,4 @@ namespace ToDo.Controllers
         }
     }
 }
+
